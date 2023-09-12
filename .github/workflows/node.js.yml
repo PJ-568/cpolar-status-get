@@ -5,10 +5,10 @@ name: Node.js CI
 
 on:
   # 手动触发
-  workflow_dispatch:
+  # workflow_dispatch:
   # 定时器
-  # schedule: 
-    # - cron: '0 1,13 * * *'
+  schedule: 
+    - cron: '0 1,13 * * *'
 
 jobs:
   build:
@@ -36,18 +36,29 @@ jobs:
           CPOLAR_EMAIL: ${{ secrets.CPOLAR_EMAIL }}
           CPOLAR_PASSWORD: ${{ secrets.CPOLAR_PASSWORD }}
 
-    - name: Send mail ✉️
-      uses: dawidd6/action-send-mail@v2
+    - name: Move
+      run: |
+        mkdir temp
+        mv index.html temp/index.html
+
+    # Deploy
+    - uses: JamesIves/github-pages-deploy-action@4.1.7
       with:
-        # smtp 服务器地址
-        server_address: smtp.163.com
-        # smtp 服务器端口
-        server_port: 465
-        username: ${{secrets.MAIL_USERNAME}}
-        password: ${{secrets.MAIL_PASSWORD}}
-        subject: cpolar今日状态
-        body: file://index.html
-        to: 1772591173@qq.com
-        from: GitHub Actions
-        content_type: text/html
-        convert_markdown: true
+        branch: release # The branch the action should deploy to.
+        folder: temp # The folder the action should deploy.
+
+#     - name: Send mail ✉️
+#       uses: dawidd6/action-send-mail@v2
+#       with:
+#         # smtp 服务器地址
+#         server_address: smtp.163.com
+#         # smtp 服务器端口
+#         server_port: 465
+#         username: ${{secrets.MAIL_USERNAME}}
+#         password: ${{secrets.MAIL_PASSWORD}}
+#         subject: cpolar今日状态
+#         body: file://index.html
+#         to: temp@163.com
+#         from: GitHub Actions
+#         content_type: text/html
+#         convert_markdown: true
